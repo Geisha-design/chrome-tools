@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Label</title>
+  <style>
+    body {
+      width: 350px;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
+    h1 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .section {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #555;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 12px;
+      color: #666;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px;
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #357ae8;
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    button.select-mode {
+      background-color: #ff9800;
+    }
+    button.select-mode:hover {
+      background-color: #f57c00;
+    }
+    button.box-select-mode {
+      background-color: #9c27b0;
+    }
+    button.box-select-mode:hover {
+      background-color: #7b1fa2;
+    }
+    .button-group {
+      display: flex;
+      gap: 8px;
+    }
+    .button-group button {
+      flex: 1;
+    }
+    .template-selector {
+      margin-bottom: 10px;
+    }
+    .template-selector select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 12px;
+      background-color: white;
+    }
+    .box-selection-info {
+      font-size: 11px;
+      color: #666;
+      margin-top: 5px;
+      padding: 8px;
+      background-color: #f3e5f5;
+      border-radius: 4px;
+      border-left: 3px solid #9c27b0;
+    }
+    .selector-preview {
+      font-size: 11px;
+      color: #666;
+      margin-top: 5px;
+      padding: 8px;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+      word-break: break-all;
+    }
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .toggle-label {
+      font-size: 12px;
+      color: #666;
+      margin-right: 10px;
+      flex: 1;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 26px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 26px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #4285f4;
+    }
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+    .api-config {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #eee;
+    }
+    .api-status {
+      font-size: 11px;
+      color: #666;
+      margin-top: 5px;
+      padding: 5px;
+      border-radius: 3px;
+    }
+    .api-status.success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .api-status.error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .api-status.sending {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    #status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .info {
+      background-color: #d1ecf1;
+      color: #0c5460;
+    }
+    #dataCount {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Google Label</h1>
+  <div class="container">
+    <div class="section">
+      <div class="section-title">数据抓取配置</div>
+      
+      <div class="template-selector">
+        <label for="templateSelect">预设模板:</label>
+        <select id="templateSelect">
+          <option value="">-- 选择模板 --</option>
+          <option value="#eeb1_bookingList > table.Design1">预订列表表格</option>
+          <option value="custom">自定义</option>
+        </select>
+      </div>
+      
+      <label for="selectorInput">CSS选择器:</label>
+      <input type="text" id="selectorInput" placeholder="例如: .title, h1, #content">
+      <div id="selectorPreview" class="selector-preview" style="display: none;"></div>
+      <label for="attributeInput">属性 (可选):</label>
+      <input type="text" id="attributeInput" placeholder="例如: href, src, text (留空获取文本)">
+      
+      <div class="toggle-container">
+        <span class="toggle-label">点击选择元素</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="selectModeToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="toggle-container">
+        <span class="toggle-label">框选模式</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="boxSelectToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div id="boxSelectionInfo" class="box-selection-info" style="display: none;"></div>
+      
+      <div class="toggle-container">
+        <span class="toggle-label">始终悬停模式</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="alwaysHoverToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">API配置</div>
+      <label for="apiUrlInput">API地址:</label>
+      <input type="text" id="apiUrlInput" value="http://localhost:8999/api/capture" placeholder="http://localhost:8999/api/capture">
+      <div class="toggle-container">
+        <span class="toggle-label">自动发送到API</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="autoSendToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div id="apiStatus" class="api-status" style="display: none;"></div>
+    </div>
+    
+    <div class="button-group">
+      <button id="scrapeBtn">抓取数据</button>
+      <button id="clearBtn">清除数据</button>
+    </div>
+    
+    <button id="exportBtn">导出数据</button>
+    
+    <div id="dataCount">已抓取: 0 条数据</div>
+    <div id="status"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
